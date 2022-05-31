@@ -1,0 +1,33 @@
+version: "3"
+services:
+  mysql:
+    container_name: "cms_mysql"
+    image: "mysql:oracle"
+    environment:
+      MYSQL_ROOT_PASSWORD: 'wordpress'
+      MYSQL_DATABASE: 'cms'
+      MYSQL_USER: 'wordpress'
+      MYSQL_PASSWORD: 'wordpress'
+    ports:
+      - "3306:3306"
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "3050:80"
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: ./server
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+  client:
+    build:
+      dockerfile: Dockerfile
+      context: ./client
+    volumes:
+      - ./client:/app
+      - /app/node_modules
